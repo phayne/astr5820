@@ -1,28 +1,26 @@
-# ASTR 5820: Origin and Evolution of Planetary Systems -- Fall 2026
+# ASTR 5820 -- conda path.
 #
 #   conda env create -f environment.yml
 #   conda activate astr5820
 #   pip install -e .
 #   python check_setup.py
 #
-# rebound is not required until Week 9. It is built for Unix-like systems; if the
-# install fails on Windows, use WSL2 or the GitHub Codespaces configuration in
-# .devcontainer/.
+# This file deliberately lists ONLY python and pip. Every course package is
+# declared in pyproject.toml and installed by `pip install -e .`, so there is one
+# dependency list rather than two that drift apart, and conda is left with a
+# trivial solve that finishes in seconds even on its old solver.
+#
+# "nodefaults" stops conda merging these channels with whatever is in your
+# ~/.condarc -- usually Anaconda's "defaults". Reconciling two package universes
+# is the most common cause of a "Solving environment" step that runs for tens of
+# minutes.
+#
+# If a future assignment needs a package that is not on PyPI, it gets added here
+# and you will be told to run `conda env update -f environment.yml`.
 name: astr5820
 channels:
   - conda-forge
+  - nodefaults
 dependencies:
   - python=3.12
-  - numpy>=1.26
-  - scipy>=1.11
-  - matplotlib>=3.8
-  - astropy>=6.0
-  - pandas>=2.1
-  - jupyterlab>=4.0
-  - ipykernel
-  - pytest>=7.4
-  - h5py
-  - tqdm
   - pip
-  - pip:
-      - rebound>=3.28

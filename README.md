@@ -12,8 +12,8 @@ any code.
 ```bash
 git clone https://github.com/phayne/astr5820.git
 cd astr5820
-conda env create -f environment.yml
-conda activate astr5820
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -e .
 python check_setup.py
 ```

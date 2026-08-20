@@ -7,7 +7,29 @@ name = "astrotools"
 version = "0.1.0"
 description = "ASTR 5820 course toolbox: planet formation from cloud to system"
 requires-python = ">=3.10"
-dependencies = ["numpy>=1.26", "scipy>=1.11", "matplotlib>=3.8"]
+
+# The complete requirement list for the course. `pip install -e .` installs all of
+# it. Every package here ships prebuilt wheels for macOS, Linux and Windows, so
+# nothing is compiled and there is no dependency solve to wait on.
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "matplotlib>=3.8",
+    "pandas>=2.1",
+    "astropy>=6.0",
+    "pytest>=7.4",
+]
+
+[project.optional-dependencies]
+# Week 9 onward. Compiled from C source at install time, so it needs a working
+# compiler -- which is why it is separate from the core install.
+#   pip install -e ".[nbody]"
+nbody = ["rebound>=3.28"]
+
+# Only if you want Jupyter inside this environment rather than using an existing
+# installation.
+#   pip install -e ".[notebook]"
+notebook = ["jupyterlab>=4.0", "ipykernel"]
 
 [tool.setuptools.packages.find]
 include = ["astrotools*"]

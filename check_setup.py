@@ -29,7 +29,7 @@ PACKAGES = [
     ("astropy", "5.3", "units, constants, FITS and VOTable archive files", True),
     ("pandas", "2.0", "reading the archival catalogues from Week 5 onward", True),
     ("pytest", "7.4", "runs the tests that define each coding exercise", True),
-    ("rebound", "3.28", "N-body integrator; needed from Week 9, not before", False),
+    ("rebound", "3.28", "N-body integrator; install in Week 9 with pip install -e '.[nbody]'", False),
 ]
 
 results = []
@@ -61,14 +61,14 @@ def check_python():
     print(f"         {platform.platform()}")
     print(f"         interpreter: {sys.executable}")
     in_named_env = (
-        os.environ.get("CONDA_DEFAULT_ENV") == "astr5820"
-        or bool(os.environ.get("VIRTUAL_ENV"))
+        bool(os.environ.get("VIRTUAL_ENV"))
+        or os.environ.get("CONDA_DEFAULT_ENV") == "astr5820"
         or bool(os.environ.get("CODESPACES"))
         or os.path.exists("/.dockerenv")
     )
     if not in_named_env:
-        print("         note: this does not look like the astr5820 environment.")
-        print("         Did you run 'conda activate astr5820'?")
+        print("         note: this does not look like the course environment.")
+        print("         Did you run 'source .venv/bin/activate'?")
 
 
 def check_packages():
@@ -80,7 +80,7 @@ def check_packages():
             if required:
                 report(name, False, f"not installed -- needed for {purpose}")
             else:
-                print(f"  [--  ] {name} -- not installed; optional until Week 9")
+                print(f"  [--  ] {name} -- not installed; not needed until Week 9")
             continue
         version = getattr(module, "__version__", "unknown")
         if version != "unknown" and _version_tuple(version) < _version_tuple(minimum):
