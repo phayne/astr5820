@@ -1,0 +1,13 @@
+# Fallback for a plain virtualenv (python -m venv .venv). conda is recommended;
+# see environment.yml and SETUP.md.
+numpy>=1.26
+scipy>=1.11
+matplotlib>=3.8
+astropy>=6.0
+pandas>=2.1
+jupyterlab>=4.0
+pytest>=7.4
+h5py
+tqdm
+# Week 9 onward. Does not build on native Windows -- use WSL2 or Codespaces.
+rebound>=3.28

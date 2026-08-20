@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "astrotools"
+version = "0.1.0"
+description = "ASTR 5820 course toolbox: planet formation from cloud to system"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26", "scipy>=1.11", "matplotlib>=3.8"]
+
+[tool.setuptools.packages.find]
+include = ["astrotools*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

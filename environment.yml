@@ -1,0 +1,27 @@
+# ASTR 5820: Origin and Evolution of Planetary Systems -- Fall 2026
+#
+#   conda env create -f environment.yml
+#   conda activate astr5820
+#   pip install -e .
+#   python check_setup.py
+#
+# rebound is not required until Week 9 and does not build natively on Windows.
+# Windows users: use WSL2 or the GitHub Codespaces configuration in .devcontainer/.
+name: astr5820
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy>=1.26
+  - scipy>=1.11
+  - matplotlib>=3.8
+  - astropy>=6.0
+  - pandas>=2.1
+  - jupyterlab>=4.0
+  - ipykernel
+  - pytest>=7.4
+  - h5py
+  - tqdm
+  - pip
+  - pip:
+      - rebound>=3.28

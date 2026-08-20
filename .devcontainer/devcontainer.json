@@ -1,0 +1,11 @@
+{
+  "name": "ASTR 5820",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "postCreateCommand": "pip install -r requirements.txt && pip install -e . && python check_setup.py",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "ms-toolsai.jupyter"],
+      "settings": { "python.defaultInterpreterPath": "/usr/local/bin/python" }
+    }
+  }
+}
