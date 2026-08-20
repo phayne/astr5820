@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASTR 5820: Python Setup</title>
+<style>
+/* ASTR 5820 setup handout — styled after Claude's markdown rendering.
+   Warm paper, system sans, dark code panels on screen and light ones in print. */
+
+:root {
+  --paper:        #faf9f5;
+  --ink:          #1f1e1d;
+  --ink-soft:     #6b6862;
+  --rule:         #e6e3da;
+  --accent:       #b3502e;
+  --code-inline:  #efece3;
+  --panel:        #2b2a27;
+  --panel-ink:    #eceadf;
+  --panel-label:  #96938a;
+  --note:         #f2efe6;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  padding: 3.5rem 1.5rem 5rem;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "Liberation Sans", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.68;
+  font-feature-settings: "kern" 1;
+}
+
+/* Single measured column — long lines are the enemy of instructions.
+   Applied to a wrapper rather than to body's children, so that per-element
+   margin shorthands further down cannot cancel the centring. */
+main {
+  max-width: 44rem;
+  margin: 0 auto;
+}
+
+/* ---------- headings ---------- */
+
+h1, h2, h3 {
+  line-height: 1.25;
+  letter-spacing: -0.011em;
+  page-break-after: avoid;
+}
+
+h1 {
+  font-size: 1.85rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem;
+}
+
+h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 2.75rem 0 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+}
+
+h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 2rem 0 0.6rem;
+}
+
+/* The markdown has an explicit rule before section 1; do not draw two. */
+hr + h2 { border-top: 0; padding-top: 0; margin-top: 0; }
+
+p { margin: 0 0 1.1rem; }
+
+strong { font-weight: 600; }
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(179, 80, 46, 0.3);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 2.5rem auto;
+}
+
+/* The italic lead paragraph directly under the title. */
+h1 + p em {
+  display: block;
+  font-style: italic;
+  color: var(--ink-soft);
+  background: var(--note);
+  border-left: 3px solid var(--accent);
+  padding: 0.85rem 1.1rem;
+  margin-bottom: 0.4rem;
+  border-radius: 0 4px 4px 0;
+}
+
+/* ---------- code ---------- */
+
+code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+               "DejaVu Sans Mono", monospace;
+  font-size: 0.86em;
+  background: var(--code-inline);
+  padding: 0.12em 0.34em;
+  border-radius: 4px;
+  word-break: break-word;
+}
+
+pre {
+  position: relative;
+  background: var(--panel);
+  color: var(--panel-ink);
+  border-radius: 8px;
+  padding: 2.1rem 1.15rem 1.1rem;
+  margin: 0 auto 1.4rem;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+  font-size: 0.855rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Language chip, the way a code block is labelled in the Claude interface. */
+pre::before {
+  content: attr(class);
+  position: absolute;
+  top: 0.6rem;
+  left: 1.15rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--panel-label);
+}
+
+pre:not([class])::before { content: "text"; }
+
+/* ---------- lists ---------- */
+
+ol, ul { margin: 0 auto 1.2rem; padding-left: 1.4rem; }
+li { margin-bottom: 0.7rem; padding-left: 0.25rem; }
+li > p { margin-bottom: 0.7rem; }
+li pre { margin-top: 0.8rem; }
+ol { counter-reset: none; }
+
+/* ---------- tables ---------- */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.6rem auto 1.5rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+th, td {
+  border: 1px solid var(--rule);
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: var(--note);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+}
+
+td:first-child { width: 32%; }
+
+td code, th code { font-size: 0.8em; }
+
+/* ---------- print ---------- */
+
+@page { size: letter; margin: 16mm 15mm; }
+
+@media print {
+  body {
+    padding: 0;
+    background: #fff;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+  body > * { max-width: 100%; }
+
+  h1 { font-size: 19pt; }
+  h2 { font-size: 13pt; margin-top: 1.6rem; padding-top: 0.9rem; }
+  h3 { font-size: 11pt; }
+
+  /* Dark panels are wrong on paper: light box, same structure. */
+  pre {
+    background: #f6f5f0;
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    padding: 1.6rem 0.9rem 0.8rem;
+  }
+  pre::before { color: var(--ink-soft); }
+  pre code { font-size: 8.9pt; }
+
+  h1 + p em { background: #f6f5f0; }
+
+  table { font-size: 8.8pt; }
+  th, td { padding: 0.4rem 0.55rem; }
+
+  a { color: var(--ink); border-bottom: none; }
+  tr, li { page-break-inside: avoid; }
+}
+
+</style>
+</head>
+<body>
+<main>
+<h1 id="astr-5820--python-setup">ASTR 5820 — Python Setup</h1>
+<p><em>Do this before Tuesday of Week 2. Budget thirty minutes. If it
+takes longer than an hour, stop and contact the instructor.</em></p>
+<p>You are building one toolbox, <code>astrotools</code>, over the whole
+semester. Week 2 adds three functions to it; Week 13 imports what Week 5
+wrote. Set it up once, keep it in git, and never copy a constant from
+one script into another.</p>
+<p>The repository is at <a
+href="https://github.com/phayne/astr5820">https://github.com/phayne/astr5820</a>.
+This document is also in it as <code>SETUP.md</code>, where the commands
+can be copied rather than retyped.</p>
+<hr />
+<h2 id="1-install">1. Install</h2>
+<p>You need conda. If you do not have it, install <a
+href="https://conda-forge.org/download/">Miniforge</a> — it is the
+smallest option and comes preconfigured for the conda-forge package
+channel. An existing Anaconda or Miniconda installation works too.</p>
+<p>From wherever you keep coursework:</p>
+<pre class="bash"><code>git clone https://github.com/phayne/astr5820.git
+cd astr5820
+conda env create -f environment.yml
+conda activate astr5820
+pip install -e .</code></pre>
+<p>That is the whole install, and it takes about a minute.</p>
+<p><code>environment.yml</code> lists only Python and pip. Every course
+package is declared in <code>pyproject.toml</code> and installed by
+<code>pip install -e .</code>, which means conda has almost nothing to
+solve — the step that can otherwise run for tens of minutes finishes in
+seconds — and there is one dependency list rather than two that drift
+apart.</p>
+<p><code>pip install -e .</code> installs the toolbox in editable mode,
+so <code>import astrotools</code> works from any directory and picks up
+your edits immediately. It prevents a common failure: an
+<code>ImportError</code> that depends on which folder you happened to be
+in.</p>
+<p><strong>Every time you come back to the course</strong>, activate the
+environment first:</p>
+<pre class="bash"><code>cd /path/to/astr5820
+conda activate astr5820</code></pre>
+<p>Your prompt will show <code>(astr5820)</code>. Nearly every "it
+worked yesterday" problem is a forgotten activation. To leave the
+environment, run <code>conda deactivate</code>.</p>
+<h3 id="without-conda">Without conda</h3>
+<p>A plain virtual environment works just as well and needs nothing
+installed beyond Python 3.10 or later:</p>
+<pre class="bash"><code>git clone https://github.com/phayne/astr5820.git
+cd astr5820
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .</code></pre>
+<p>On Windows, replace the activation line with
+<code>.venv\Scripts\activate</code>. Activate with
+<code>source .venv/bin/activate</code> rather than
+<code>conda activate astr5820</code>, and leave it with
+<code>deactivate</code>; everything else in this document is the
+same.</p>
+<h3 id="week-9-only-rebound">Week 9 only: rebound</h3>
+<p>The N-body integrator <code>rebound</code> is compiled from C source
+rather than installed from a wheel, so it is kept out of the main
+install. You will not need it until Week 9:</p>
+<pre class="bash"><code>pip install -e &quot;.[nbody]&quot;</code></pre>
+<p>On macOS this needs the command line tools
+(<code>xcode-select --install</code>); on Linux, <code>gcc</code>. On
+Windows it depends on your toolchain — some students have installed it
+successfully under Anaconda and Jupyter, others have not. If it fails
+there, use <strong>WSL2</strong> (install Ubuntu from the Microsoft
+Store and follow the instructions above inside it) or <strong>GitHub
+Codespaces</strong> (open the repository on GitHub → <em>Code</em> →
+<em>Codespaces</em> → <em>Create codespace</em>, where
+<code>.devcontainer/</code> sets everything up for you). Try it well
+before Week 9 so there is time to sort out.</p>
+<h2 id="2-verify">2. Verify</h2>
+<pre class="bash"><code>python check_setup.py</code></pre>
+<p>Every line should read <code>OK</code>. The script checks your Python
+version, your packages, that the toolbox imports, that the provided
+Euler integrator runs, and that matplotlib can write a file.</p>
+<p>It finishes by reporting how many Problem Set 1 tests pass. Nearly
+all of them <strong>will fail</strong> — that is the assignment. Setup
+problems appear above the line of equals signs; assignment problems
+appear below it.</p>
+<h2 id="3-what-is-in-here">3. What is in here</h2>
+<pre><code>astrotools/          the toolbox you are building
+  constants.py       every number the course uses. Import from here, always.
+  cloud/collapse.py  Set 1, stage A  &lt;- you write three functions
+  nbody/twobody.py   orbits, initial conditions, conserved quantities (provided)
+  nbody/integrators.py  Set 1, stage B  &lt;- you write rk4_step
+  data.py            loaders for the archival datasets
+tests/               validation targets for each coding exercise
+ps1/                 driver scripts for the two Problem Set 1 figures
+data/                archival data, with provenance in data/README.md
+check_setup.py       this file&#39;s companion</code></pre>
+<h2 id="4-how-a-coding-exercise-works">4. How a coding exercise
+works</h2>
+<p>Every week follows the same three steps.</p>
+<ol type="1">
+<li><strong>Read the test first.</strong> The folder <code>tests/</code>
+contains the validation targets: for each function, the reference value
+it must reproduce for a stated set of inputs, and the scaling it must
+obey when those inputs change. Nothing is hidden — read the test as the
+specification of what you are being asked to write.</li>
+<li><strong>Write the function until the test passes.</strong>
+<pre class="bash"><code>pytest tests/test_ps1a_collapse.py -v</code></pre>
+Add <code>-x</code> to stop at the first failure and
+<code>-k jeans</code> to run one test.</li>
+<li><strong>Then apply it to observations.</strong> The tests confirm
+your code is right; they say nothing about whether the physics is. Each
+set ends by comparing your result against an archival dataset, which is
+supplied in <code>data/</code> and loaded by the functions in
+<code>astrotools/data.py</code> — you do not need to locate or download
+anything yourself. The scientific question — <em>does the predicted
+spread of disk radii match the observed one, and which input dominates
+it?</em> — is answered in the figure and the write-up, and that is where
+most of the credit lives.</li>
+</ol>
+<h2 id="5-when-the-toolbox-gains-a-package">5. When the toolbox gains a
+package</h2>
+<p>Later problem sets add dependencies — <code>rebound</code> in Week 9,
+and possibly others. When that happens you will be told to run, from the
+repository root with your environment active:</p>
+<pre class="bash"><code>git pull
+pip install -e .</code></pre>
+<p><code>pip install -e .</code> is safe to run as often as you like: it
+installs whatever is new and leaves the rest alone. Because the
+requirement list lives in <code>pyproject.toml</code>, this is the same
+command whether you set up with conda or with a virtual environment, and
+it never involves a solve.</p>
+<p>If a package cannot come from PyPI, <code>environment.yml</code> will
+be updated instead and you will be told to run
+<code>conda env update -f environment.yml</code>. Do not install course
+packages ad hoc with <code>conda install</code> or
+<code>pip install &lt;name&gt;</code> — an environment that no longer
+matches the repository is one nobody else can help you debug.</p>
+<h2 id="6-handing-work-in">6. Handing work in</h2>
+<p>Submit a single PDF containing your derivations, your figures, and
+your answers, plus a link to your repository at the commit you are
+submitting. Figures must state where their data came from.</p>
+<hr />
+<h2 id="troubleshooting">Troubleshooting</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Symptom</th>
+<th>Cause and fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ModuleNotFoundError: No module named 'astrotools'</code></td>
+<td>You skipped <code>pip install -e .</code>, or the environment is not
+active. Run <code>conda activate astr5820</code> (or
+<code>source .venv/bin/activate</code>) from the repository root, then
+run the install command again.</td>
+</tr>
+<tr class="even">
+<td><code>ModuleNotFoundError</code> for numpy or scipy after installing
+them</td>
+<td>Two Pythons. <code>python check_setup.py</code> prints the
+interpreter path — confirm it sits inside the <code>astr5820</code>
+environment, or inside <code>.venv</code> in the repository.</td>
+</tr>
+<tr class="odd">
+<td><code>pip install -e .</code> fails to build a package</td>
+<td>Almost always means pip could not find a wheel and fell back to
+compiling. Check that <code>python3 --version</code> is 3.10 or later
+and that <code>pip install --upgrade pip</code> has been run — an old
+pip does not recognise newer wheel tags.</td>
+</tr>
+<tr class="even">
+<td>conda's <code>Solving environment</code> runs for more than a
+minute</td>
+<td>You are using an older copy of <code>environment.yml</code>. Run
+<code>git pull</code> — the current file lists only Python and pip,
+which solves almost instantly. Ctrl-C will not interrupt a solve in
+progress, since it runs inside a C extension that ignores the signal;
+open a second terminal, run <code>pkill -f conda</code>, then
+<code>conda env remove -n astr5820</code> before retrying.</td>
+</tr>
+<tr class="odd">
+<td><code>rebound</code> fails to install</td>
+<td>It compiles from source and needs a C compiler:
+<code>xcode-select --install</code> on macOS, <code>gcc</code> on Linux.
+On Windows, use WSL2 or Codespaces (§1). Not needed before Week 9.</td>
+</tr>
+<tr class="even">
+<td>Figures do not appear when running a script</td>
+<td>Scripts save to <code>figures/</code> rather than opening a window.
+Open the file. In Jupyter, add <code>%matplotlib inline</code>.</td>
+</tr>
+<tr class="odd">
+<td>A test fails by roughly a factor of 1.5</td>
+<td>Almost always µ: mass density is <code>n(H2) * mu * m_H</code>, and
+<code>sqrt(2.33) = 1.53</code>.</td>
+</tr>
+<tr class="even">
+<td>A test fails by orders of magnitude</td>
+<td>Units. Everything in this course is SI, including inputs. Convert at
+the boundary, never inside a formula.</td>
+</tr>
+<tr class="odd">
+<td>Jupyter cannot see the environment</td>
+<td>With the environment active, run
+<code>pip install -e ".[notebook]"</code> then
+<code>python -m ipykernel install --user --name astr5820</code>, and
+pick that kernel.</td>
+</tr>
+</tbody>
+</table>
+<p>Still stuck after fifteen minutes? Contact the instructor, including
+the full output of <code>python check_setup.py</code>.</p>
+
+</main>
+</body>
+</html>

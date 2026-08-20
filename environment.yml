@@ -1,4 +1,4 @@
-# ASTR 5820 -- conda path.
+# ASTR 5820 -- the recommended install path.
 #
 #   conda env create -f environment.yml
 #   conda activate astr5820

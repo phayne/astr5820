@@ -60,15 +60,19 @@ def check_python():
     )
     print(f"         {platform.platform()}")
     print(f"         interpreter: {sys.executable}")
+    # sys.prefix differs from base_prefix inside any virtual environment, whether
+    # or not it was activated in this shell -- more reliable than $VIRTUAL_ENV.
     in_named_env = (
-        bool(os.environ.get("VIRTUAL_ENV"))
+        sys.prefix != sys.base_prefix
         or os.environ.get("CONDA_DEFAULT_ENV") == "astr5820"
+        or os.environ.get("CONDA_PREFIX", "").endswith("astr5820")
         or bool(os.environ.get("CODESPACES"))
         or os.path.exists("/.dockerenv")
     )
     if not in_named_env:
         print("         note: this does not look like the course environment.")
-        print("         Did you run 'source .venv/bin/activate'?")
+        print("         Did you run 'conda activate astr5820'")
+        print("         (or 'source .venv/bin/activate')?")
 
 
 def check_packages():
