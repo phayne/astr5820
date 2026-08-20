@@ -8,8 +8,8 @@ Run this once you have followed SETUP.md:
 
 It verifies your Python version, your packages, that the course toolbox imports,
 and that plotting and file output work. If every line reads OK, you are set up
-for the semester. Bring any FAIL to office hours or post it on the course Slack
-with the full output pasted in -- do not spend an hour on it alone.
+for the semester. Bring any FAIL to office hours or contact the instructor with
+the full output pasted in -- do not spend an hour on it alone.
 """
 
 import contextlib
@@ -209,7 +209,7 @@ def main():
         for name in failures:
             print(f"  - {name}")
         print("\nSee the Troubleshooting section of SETUP.md. If that does not")
-        print("resolve it, paste this entire output into the course Slack.")
+        print("resolve it, send this entire output to the instructor.")
     else:
         print("All checks passed. Your environment is ready.")
     print("=" * 68)

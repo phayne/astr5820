@@ -1,8 +1,7 @@
 # ASTR 5820 — Python Setup
 
 *Do this before Tuesday of Week 2. Budget thirty minutes. If it takes longer than
-an hour, stop and post on the course Slack — an afternoon lost to a broken conda
-install teaches you nothing about planet formation.*
+an hour, stop and contact the instructor.*
 
 You are building one toolbox, `astrotools`, over the whole semester. Week 2 adds
 three functions to it; Week 13 imports what Week 5 wrote. Set it up once, keep it
@@ -18,7 +17,7 @@ Install [Miniforge](https://conda-forge.org/download/) if you do not already hav
 conda. Then, from wherever you keep coursework:
 
 ```bash
-git clone <course-repository-url> astr5820
+git clone https://github.com/phayne/astr5820.git
 cd astr5820
 conda env create -f environment.yml
 conda activate astr5820
@@ -27,12 +26,15 @@ pip install -e .
 
 `pip install -e .` installs the toolbox in editable mode, so `import astrotools`
 works from any directory and picks up your edits immediately. It is the single
-step that prevents the most common failure of the semester, which is an
-`ImportError` that depends on which folder you happened to be in.
+step that prevents a common failure: an `ImportError` that depends on which
+folder you happened to be in.
 
-**Windows.** One package in the course, `rebound`, does not build natively on
-Windows. It is not needed until Week 9, but set up a working path now rather than
-in the middle of Set 4. Either:
+**Windows.** One package in the course, `rebound`, is the one likely to give
+trouble: it is built for Unix-like systems and its Windows behavior varies with
+the toolchain. Some students have installed and run it successfully under
+Anaconda and Jupyter; others have not. It is not needed until Week 9, so try the
+direct install now and, if it fails, use one of the following rather than waiting
+until Set 4:
 
 - **WSL2** (recommended): install Ubuntu from the Microsoft Store, then follow the
   macOS/Linux instructions inside it. You get a real Linux toolchain and VS Code
@@ -71,7 +73,7 @@ astrotools/          the toolbox you are building
   nbody/twobody.py   orbits, initial conditions, conserved quantities (provided)
   nbody/integrators.py  Set 1, stage B  <- you write rk4_step
   data.py            loaders for the archival datasets
-tests/               the specification for each coding exercise
+tests/               validation targets for each coding exercise
 ps1/                 driver scripts for the two Problem Set 1 figures
 data/                archival data, with provenance in data/README.md
 check_setup.py       this file's companion
@@ -81,28 +83,30 @@ check_setup.py       this file's companion
 
 Every week follows the same three steps.
 
-1. **Read the test first.** `tests/` is the specification. It states the fiducial
-   value your function must reproduce and the scaling it must obey. Nothing is
-   hidden in it.
+1. **Read the test first.** The folder `tests/` contains the validation targets:
+   for each function, the reference value it must reproduce for a stated set of
+   inputs, and the scaling it must obey when those inputs change. Nothing is
+   hidden — read the test as the specification of what you are being asked to
+   write.
 2. **Write the function until the test passes.**
    ```bash
    pytest tests/test_ps1a_collapse.py -v
    ```
    Add `-x` to stop at the first failure and `-k jeans` to run one test.
-3. **Then apply it to real data.** The tests confirm your code is right; they say
-   nothing about whether the physics is. The scientific question — *does the
-   predicted spread of disk radii match the observed one, and which input
-   dominates it?* — is answered in the figure and the write-up, and that is where
-   most of the credit lives.
-
-A passing test is the floor, not the ceiling.
+3. **Then apply it to observations.** The tests confirm your code is right; they
+   say nothing about whether the physics is. Each set ends by comparing your
+   result against an archival dataset, which is supplied in `data/` and loaded by
+   the functions in `astrotools/data.py` — you do not need to locate or download
+   anything yourself. The scientific question — *does the predicted spread of
+   disk radii match the observed one, and which input dominates it?* — is
+   answered in the figure and the write-up, and that is where most of the credit
+   lives.
 
 ## 5. Handing work in
 
 Submit a single PDF containing your derivations, your figures, and your answers,
 plus a link to your repository at the commit you are submitting. Figures must
-state where their data came from. Committing as you go is strongly advised: "it
-worked last night" is not a recoverable state unless you committed it.
+state where their data came from.
 
 ---
 
@@ -112,12 +116,12 @@ worked last night" is not a recoverable state unless you committed it.
 |---|---|
 | `ModuleNotFoundError: No module named 'astrotools'` | You skipped `pip install -e .`, or you are in the wrong environment. Run `conda activate astr5820`, then `pip install -e .` from the repository root. |
 | `ModuleNotFoundError` for numpy or scipy after installing them | Two Pythons. `python check_setup.py` prints the interpreter path — confirm it sits inside your `astr5820` environment. |
-| `rebound` fails to build on Windows | Expected. Use WSL2 or Codespaces (§1). Not needed before Week 9. |
+| `rebound` fails to build on Windows | Common, though not universal. Use WSL2 or Codespaces (§1). Not needed before Week 9. |
 | `conda env create` hangs on "Solving environment" | Use Miniforge rather than Anaconda; the conda-forge-only channel list resolves much faster. |
 | Figures do not appear when running a script | Scripts save to `figures/` rather than opening a window. Open the file. In Jupyter, add `%matplotlib inline`. |
 | A test fails by roughly a factor of 1.5 | Almost always µ: mass density is `n(H2) * mu * m_H`, and `sqrt(2.33) = 1.53`. |
 | A test fails by orders of magnitude | Units. Everything in this course is SI, including inputs. Convert at the boundary, never inside a formula. |
 | Jupyter cannot see the environment | `python -m ipykernel install --user --name astr5820`, then pick that kernel. |
 
-Still stuck after fifteen minutes? Post the full output of `python check_setup.py`
-on Slack. Someone else has the same problem.
+Still stuck after fifteen minutes? Contact the instructor, including the full
+output of `python check_setup.py`.

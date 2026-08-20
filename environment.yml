@@ -5,8 +5,9 @@
 #   pip install -e .
 #   python check_setup.py
 #
-# rebound is not required until Week 9 and does not build natively on Windows.
-# Windows users: use WSL2 or the GitHub Codespaces configuration in .devcontainer/.
+# rebound is not required until Week 9. It is built for Unix-like systems; if the
+# install fails on Windows, use WSL2 or the GitHub Codespaces configuration in
+# .devcontainer/.
 name: astr5820
 channels:
   - conda-forge

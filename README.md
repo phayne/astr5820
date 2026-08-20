@@ -10,6 +10,8 @@ functions to it, and later sets import what earlier ones wrote. The tests in
 any code.
 
 ```bash
+git clone https://github.com/phayne/astr5820.git
+cd astr5820
 conda env create -f environment.yml
 conda activate astr5820
 pip install -e .
