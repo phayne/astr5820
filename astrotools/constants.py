@@ -27,9 +27,13 @@ M_H         = 1.67353e-27        # mass of the hydrogen ATOM    [kg]
 M_P         = 1.67262192e-27     # mass of the proton           [kg]
 M_E         = 9.1093837015e-31   # mass of the electron         [kg]
 
-# Note: mu is defined per hydrogen ATOM mass throughout this course, i.e.
-# rho = n(H2) * mu * M_H with mu = 2.33 for cloud material. Some texts define mu
-# per H2 MOLECULE instead, which changes rho by a factor of ~2. See MU_CLOUD below.
+# Note: TWO mean molecular weights appear in this course and they are not the
+# same quantity. MU_CLOUD = 2.33 is the mean mass per free PARTICLE in units of
+# M_H, and belongs in the sound speed, c_s = sqrt(k T / (MU_CLOUD * M_H)).
+# MU_H2 = 2.8 is the total gas mass per H2 MOLECULE, including helium, and is
+# what converts an H2 number density into a mass density,
+# rho = n(H2) * MU_H2 * M_H. Both appear in the Jeans mass. Using 2.33 for the
+# density conversion makes rho low by 20% and M_J high by 10%.
 
 # =====================================================================
 # Astronomical units and bodies (IAU 2015 nominal values)
@@ -57,16 +61,19 @@ R_JUP       = 6.9911e7           # equatorial radius             [m]
 # Use GM_SUN wherever the product is what you need -- it is the better number.
 
 # =====================================================================
-# Fiducial dense core (Lectures 2-3; Problem Set 1, stage A)
+# Fiducial dense core (Lectures 2-3; Problem Set 1)
 # =====================================================================
 # A stake in the ground, not a claim about any particular object. Chosen so the
-# core comes out marginally Jeans unstable, which is the interesting regime.
+# core comes out marginally Jeans unstable, which is the interesting regime:
+# M_CORE / M_J = 1.93. Note that T, n and M fix the radius -- R_CORE is not an
+# independent choice, and 0.047 pc is what (3 M_CORE / 4 pi rho)^(1/3) returns.
 T_CORE          = 10.0           # temperature                   [K]
 N_H2_CORE       = 1.0e11         # H2 number density             [m^-3]
-R_CORE          = 0.05 * PC      # radius                        [m]
-M_CORE          = 1.0 * M_SUN    # enclosed mass                 [kg]
+R_CORE          = 0.047 * PC     # radius (follows from M, n)    [m]
+M_CORE          = 3.0 * M_SUN    # enclosed mass                 [kg]
 OMEGA_CORE      = 3.0e-14        # angular frequency             [s^-1]
-MU_CLOUD        = 2.33           # mean molecular weight per H atom mass, molecular cloud
+MU_CLOUD        = 2.33           # mean mass per particle / M_H (sound speed)
+MU_H2           = 2.8            # gas mass per H2 molecule / M_H (density conversion)
 
 # The fiducial Omega is a ROUNDED stand-in for a 1 km/s/pc velocity gradient;
 # the exact conversion is 3.241e-14 s^-1 (see omega_from_velocity_gradient).

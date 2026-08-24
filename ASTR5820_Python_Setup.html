@@ -233,7 +233,7 @@ td code, th code { font-size: 0.8em; }
 <p><em>Do this before Tuesday of Week 2. Budget thirty minutes. If it
 takes longer than an hour, stop and contact the instructor.</em></p>
 <p>You are building one toolbox, <code>astrotools</code>, over the whole
-semester. Week 2 adds three functions to it; Week 13 imports what Week 5
+semester. Week 2 adds four functions to it; Week 13 imports what Week 5
 wrote. Set it up once, keep it in git, and never copy a constant from
 one script into another.</p>
 <p>The repository is at <a
@@ -242,10 +242,12 @@ This document is also in it as <code>SETUP.md</code>, where the commands
 can be copied rather than retyped.</p>
 <hr />
 <h2 id="1-install">1. Install</h2>
-<p>You need conda. If you do not have it, install <a
-href="https://conda-forge.org/download/">Miniforge</a> — it is the
-smallest option and comes preconfigured for the conda-forge package
-channel. An existing Anaconda or Miniconda installation works too.</p>
+<p>These instructions use conda. If you already have Anaconda or
+Miniconda, that works; if not, <a
+href="https://conda-forge.org/download/">Miniforge</a> is the smallest
+option and comes preconfigured for the conda-forge package channel. If
+you would rather not install conda at all, skip to <em>Without
+conda</em> below — a plain virtual environment works just as well.</p>
 <p>From wherever you keep coursework:</p>
 <pre class="bash"><code>git clone https://github.com/phayne/astr5820.git
 cd astr5820
@@ -305,20 +307,22 @@ before Week 9 so there is time to sort out.</p>
 <p>Every line should read <code>OK</code>. The script checks your Python
 version, your packages, that the toolbox imports, that the provided
 Euler integrator runs, and that matplotlib can write a file.</p>
-<p>It finishes by reporting how many Problem Set 1 tests pass. Nearly
-all of them <strong>will fail</strong> — that is the assignment. Setup
-problems appear above the line of equals signs; assignment problems
-appear below it.</p>
+<p>It finishes by reporting how many Problem Set 1 and 2 tests pass.
+Nearly all of them <strong>will fail</strong> — that is the assignment.
+Setup problems appear above the line of equals signs; assignment
+problems appear below it.</p>
 <h2 id="3-what-is-in-here">3. What is in here</h2>
 <pre><code>astrotools/          the toolbox you are building
   constants.py       every number the course uses. Import from here, always.
-  cloud/collapse.py  Set 1, stage A  &lt;- you write three functions
+  cloud/collapse.py  Set 1           &lt;- you write four functions
   nbody/twobody.py   orbits, initial conditions, conserved quantities (provided)
-  nbody/integrators.py  Set 1, stage B  &lt;- you write rk4_step
+  nbody/integrators.py  Set 2        &lt;- you write rk4_step
   data.py            loaders for the archival datasets
 tests/               validation targets for each coding exercise
-ps1/                 driver scripts for the two Problem Set 1 figures
+ps1/, ps2/           starting points for the Set 1 and Set 2 figures
 data/                archival data, with provenance in data/README.md
+widgets/             the in-class widgets. Open the .html file in a browser;
+                     nothing to install, and they work offline.
 check_setup.py       this file&#39;s companion</code></pre>
 <h2 id="4-how-a-coding-exercise-works">4. How a coding exercise
 works</h2>
@@ -330,7 +334,7 @@ it must reproduce for a stated set of inputs, and the scaling it must
 obey when those inputs change. Nothing is hidden — read the test as the
 specification of what you are being asked to write.</li>
 <li><strong>Write the function until the test passes.</strong>
-<pre class="bash"><code>pytest tests/test_ps1a_collapse.py -v</code></pre>
+<pre class="bash"><code>pytest tests/test_ps1_collapse.py -v</code></pre>
 Add <code>-x</code> to stop at the first failure and
 <code>-k jeans</code> to run one test.</li>
 <li><strong>Then apply it to observations.</strong> The tests confirm
@@ -338,11 +342,16 @@ your code is right; they say nothing about whether the physics is. Each
 set ends by comparing your result against an archival dataset, which is
 supplied in <code>data/</code> and loaded by the functions in
 <code>astrotools/data.py</code> — you do not need to locate or download
-anything yourself. The scientific question — <em>does the predicted
-spread of disk radii match the observed one, and which input dominates
-it?</em> — is answered in the figure and the write-up, and that is where
-most of the credit lives.</li>
+anything yourself. For Set 1 that dataset is the <em>Herschel</em> Gould
+Belt core catalog, and the questions are whether the Jeans mass predicts
+the masses of real cores and whether the free-fall time predicts how
+long they live.</li>
 </ol>
+<p>The week runs in that order for a reason. Tuesday you derive the
+result and commit to a prediction; Thursday the widget shows you whether
+the prediction held; then you write the function that produced the
+widget's numbers and turn it on real data. By the time you open
+<code>collapse.py</code> you have already seen what it should do.</p>
 <h2 id="5-when-the-toolbox-gains-a-package">5. When the toolbox gains a
 package</h2>
 <p>Later problem sets add dependencies — <code>rebound</code> in Week 9,
@@ -394,7 +403,7 @@ environment, or inside <code>.venv</code> in the repository.</td>
 <td>Almost always means pip could not find a wheel and fell back to
 compiling. Check that <code>python3 --version</code> is 3.10 or later
 and that <code>pip install --upgrade pip</code> has been run — an old
-pip does not recognise newer wheel tags.</td>
+pip does not recognize newer wheel tags.</td>
 </tr>
 <tr class="even">
 <td>conda's <code>Solving environment</code> runs for more than a

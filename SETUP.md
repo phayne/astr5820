@@ -4,17 +4,18 @@
 an hour, stop and contact the instructor.*
 
 You are building one toolbox, `astrotools`, over the whole semester. Week 2 adds
-three functions to it; Week 13 imports what Week 5 wrote. Set it up once, keep it
+four functions to it; Week 13 imports what Week 5 wrote. Set it up once, keep it
 in git, and never copy a constant from one script into another.
 
 ---
 
 ## 1. Install
 
-You need conda. If you do not have it, install
-[Miniforge](https://conda-forge.org/download/) — it is the smallest option and
-comes preconfigured for the conda-forge package channel. An existing Anaconda or
-Miniconda installation works too.
+These instructions use conda. If you already have Anaconda or Miniconda, that
+works; if not, [Miniforge](https://conda-forge.org/download/) is the smallest
+option and comes preconfigured for the conda-forge package channel. If you would
+rather not install conda at all, skip to *Without conda* below — a plain virtual
+environment works just as well.
 
 From wherever you keep coursework:
 
@@ -92,7 +93,7 @@ Every line should read `OK`. The script checks your Python version, your package
 that the toolbox imports, that the provided Euler integrator runs, and that
 matplotlib can write a file.
 
-It finishes by reporting how many Problem Set 1 tests pass. Nearly all of them
+It finishes by reporting how many Problem Set 1 and 2 tests pass. Nearly all of them
 **will fail** — that is the assignment. Setup problems appear above the line of
 equals signs; assignment problems appear below it.
 
@@ -101,13 +102,15 @@ equals signs; assignment problems appear below it.
 ```
 astrotools/          the toolbox you are building
   constants.py       every number the course uses. Import from here, always.
-  cloud/collapse.py  Set 1, stage A  <- you write three functions
+  cloud/collapse.py  Set 1           <- you write four functions
   nbody/twobody.py   orbits, initial conditions, conserved quantities (provided)
-  nbody/integrators.py  Set 1, stage B  <- you write rk4_step
+  nbody/integrators.py  Set 2        <- you write rk4_step
   data.py            loaders for the archival datasets
 tests/               validation targets for each coding exercise
-ps1/                 driver scripts for the two Problem Set 1 figures
+ps1/, ps2/           starting points for the Set 1 and Set 2 figures
 data/                archival data, with provenance in data/README.md
+widgets/             the in-class widgets. Open the .html file in a browser;
+                     nothing to install, and they work offline.
 check_setup.py       this file's companion
 ```
 
@@ -122,17 +125,22 @@ Every week follows the same three steps.
    write.
 2. **Write the function until the test passes.**
    ```bash
-   pytest tests/test_ps1a_collapse.py -v
+   pytest tests/test_ps1_collapse.py -v
    ```
    Add `-x` to stop at the first failure and `-k jeans` to run one test.
 3. **Then apply it to observations.** The tests confirm your code is right; they
    say nothing about whether the physics is. Each set ends by comparing your
    result against an archival dataset, which is supplied in `data/` and loaded by
    the functions in `astrotools/data.py` — you do not need to locate or download
-   anything yourself. The scientific question — *does the predicted spread of
-   disk radii match the observed one, and which input dominates it?* — is
-   answered in the figure and the write-up, and that is where most of the credit
-   lives.
+   anything yourself. For Set 1 that dataset is the *Herschel* Gould Belt core
+   catalog, and the questions are whether the Jeans mass predicts the masses of
+   real cores and whether the free-fall time predicts how long they live.
+
+The week runs in that order for a reason. Tuesday you derive the result and
+commit to a prediction; Thursday the widget shows you whether the prediction
+held; then you write the function that produced the widget's numbers and turn it
+on real data. By the time you open `collapse.py` you have already seen what it
+should do.
 
 ## 5. When the toolbox gains a package
 
@@ -170,7 +178,7 @@ state where their data came from.
 |---|---|
 | `ModuleNotFoundError: No module named 'astrotools'` | You skipped `pip install -e .`, or the environment is not active. Run `conda activate astr5820` (or `source .venv/bin/activate`) from the repository root, then run the install command again. |
 | `ModuleNotFoundError` for numpy or scipy after installing them | Two Pythons. `python check_setup.py` prints the interpreter path — confirm it sits inside the `astr5820` environment, or inside `.venv` in the repository. |
-| `pip install -e .` fails to build a package | Almost always means pip could not find a wheel and fell back to compiling. Check that `python3 --version` is 3.10 or later and that `pip install --upgrade pip` has been run — an old pip does not recognise newer wheel tags. |
+| `pip install -e .` fails to build a package | Almost always means pip could not find a wheel and fell back to compiling. Check that `python3 --version` is 3.10 or later and that `pip install --upgrade pip` has been run — an old pip does not recognize newer wheel tags. |
 | conda's `Solving environment` runs for more than a minute | You are using an older copy of `environment.yml`. Run `git pull` — the current file lists only Python and pip, which solves almost instantly. Ctrl-C will not interrupt a solve in progress, since it runs inside a C extension that ignores the signal; open a second terminal, run `pkill -f conda`, then `conda env remove -n astr5820` before retrying. |
 | `rebound` fails to install | It compiles from source and needs a C compiler: `xcode-select --install` on macOS, `gcc` on Linux. On Windows, use WSL2 or Codespaces (§1). Not needed before Week 9. |
 | Figures do not appear when running a script | Scripts save to `figures/` rather than opening a window. Open the file. In Jupyter, add `%matplotlib inline`. |
