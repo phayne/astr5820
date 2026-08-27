@@ -12,6 +12,8 @@ Do not redefine constants locally. If you need a number that is not here, add it
 here and say where it came from.
 """
 
+import math
+
 # =====================================================================
 # Fundamental constants (CODATA 2018; SI)
 # =====================================================================
@@ -33,7 +35,7 @@ M_E         = 9.1093837015e-31   # mass of the electron         [kg]
 # MU_H2 = 2.8 is the total gas mass per H2 MOLECULE, including helium, and is
 # what converts an H2 number density into a mass density,
 # rho = n(H2) * MU_H2 * M_H. Both appear in the Jeans mass. Using 2.33 for the
-# density conversion makes rho low by 20% and M_J high by 10%.
+# density conversion makes rho low by 17% and M_J high by 10%.
 
 # =====================================================================
 # Astronomical units and bodies (IAU 2015 nominal values)
@@ -47,7 +49,7 @@ GYR         = 1.0e9 * YR
 DAY         = 86400.0            # [s]
 
 GM_SUN      = 1.32712440018e20   # solar gravitational parameter [m^3 s^-2]
-M_SUN       = GM_SUN / G         # 1.9885e30                     [kg]
+M_SUN       = GM_SUN / G         # 1.9884e30                     [kg]
 R_SUN       = 6.957e8            # [m]
 L_SUN       = 3.828e26           # [W]
 T_SUN       = 5772.0             # effective temperature         [K]
@@ -65,20 +67,61 @@ R_JUP       = 6.9911e7           # equatorial radius             [m]
 # =====================================================================
 # A stake in the ground, not a claim about any particular object. Chosen so the
 # core comes out marginally Jeans unstable, which is the interesting regime:
-# M_CORE / M_J = 1.93. Note that T, n and M fix the radius -- R_CORE is not an
-# independent choice, and 0.047 pc is what (3 M_CORE / 4 pi rho)^(1/3) returns.
+# M_CORE / M_J = 1.93.
+#
+# Only these four are free. Everything below them is DERIVED, so that editing a
+# free parameter cannot leave a stale number behind.
 T_CORE          = 10.0           # temperature                   [K]
 N_H2_CORE       = 1.0e11         # H2 number density             [m^-3]
-R_CORE          = 0.047 * PC     # radius (follows from M, n)    [m]
 M_CORE          = 3.0 * M_SUN    # enclosed mass                 [kg]
 OMEGA_CORE      = 3.0e-14        # angular frequency             [s^-1]
+
 MU_CLOUD        = 2.33           # mean mass per particle / M_H (sound speed)
 MU_H2           = 2.8            # gas mass per H2 molecule / M_H (density conversion)
 
+
+def uniform_sphere_radius(mass, density):
+    """Radius of a uniform sphere of given mass and mass density.
+
+    Parameters
+    ----------
+    mass : float
+        Mass [kg].
+    density : float
+        Mass density [kg m^-3].
+
+    Returns
+    -------
+    float
+        Radius [m], from M = (4/3) pi R^3 rho.
+    """
+    return (3.0 * mass / (4.0 * math.pi * density)) ** (1.0 / 3.0)
+
+
+# Derived -- do not hand-edit these. A core's mass, density and radius are not
+# three independent choices: fixing any two fixes the third. R_CORE used to be
+# stored as a literal 0.047 * PC, which silently went stale whenever M_CORE or
+# N_H2_CORE was changed. It is now computed.
+RHO_CORE        = N_H2_CORE * MU_H2 * M_H     # mass density     [kg m^-3]
+R_CORE          = uniform_sphere_radius(M_CORE, RHO_CORE)   # radius [m]
+# For the values above: RHO_CORE = 4.686e-16 kg m^-3, R_CORE = 0.0469 pc.
+# The lectures quote 4.69e-16 and 0.047 pc; that is rounding, not a discrepancy.
+
 # The fiducial Omega is a ROUNDED stand-in for a 1 km/s/pc velocity gradient;
-# the exact conversion is 3.241e-14 s^-1 (see omega_from_velocity_gradient).
+# the exact conversion is 3.241e-14 s^-1 (see omega_from_velocity_gradient), so
+# OMEGA_CORE corresponds to a gradient of 0.926 km/s/pc.
 # Because R_c goes as Omega^2, the rounding is a ~17% difference in disk radius.
 # Use OMEGA_CORE for the fiducial test value; use the converter for the sweep.
+
+# Observed range of dense-core velocity gradients, for the Problem Set 1 sweep.
+GRAD_CORE_MIN   = 0.3            # [km s^-1 pc^-1]
+GRAD_CORE_MAX   = 4.0            # [km s^-1 pc^-1]
+
+# Measured Class II gas disk radii for comparison with the predicted R_c:
+# 12CO (90% flux) radii of 21 Lupus disks, Ansdell et al. 2018, ApJ 859, 21.
+R_CLASS2_MEDIAN = 194.0 * AU     # median gas radius             [m]
+R_CLASS2_MIN    = 68.0 * AU      # smallest in the sample        [m]
+R_CLASS2_MAX    = 462.0 * AU     # largest in the sample         [m]
 
 # =====================================================================
 # Standard disk model: Hayashi minimum-mass solar nebula (Weeks 5 onward)
@@ -123,6 +166,11 @@ def omega_from_velocity_gradient(grad_km_s_pc):
         Angular frequency [s^-1]. 1 km/s/pc -> 3.241e-14 s^-1.
     """
     return grad_km_s_pc * 1.0e3 / PC
+
+
+def velocity_gradient_from_omega(omega):
+    """Inverse of omega_from_velocity_gradient: [s^-1] -> [km s^-1 pc^-1]."""
+    return omega * PC / 1.0e3
 
 
 def au(x_metres):

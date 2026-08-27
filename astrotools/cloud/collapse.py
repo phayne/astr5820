@@ -104,7 +104,7 @@ def specific_angular_momentum(omega, radius):
     omega : float or array_like
         Angular frequency [s^-1].
     radius : float or array_like
-        Cylindrical radius of the parcel [m].
+        Cylindrical radius of the parcel [m], written s in Lecture 2.
 
     Returns
     -------
@@ -138,7 +138,7 @@ def centrifugal_radius(omega, radius, mass, theta=np.pi / 2):
     Notes
     -----
     Fiducial core (Omega = 3e-14 s^-1, R_0 = 0.047 pc, M = 3 M_sun):
-    R_c = 66.6 AU (quoted as ~67 AU in Lecture 3).
+    R_c = 66.5 AU (quoted as ~67 AU in Lecture 2, section 2.6).
 
     The sin^4(theta) dependence is what makes this a disk rather than a shell.
     Use GM_SUN rather than G * M_SUN when the mass is exactly one solar mass.

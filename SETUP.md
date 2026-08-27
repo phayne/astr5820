@@ -4,18 +4,17 @@
 an hour, stop and contact the instructor.*
 
 You are building one toolbox, `astrotools`, over the whole semester. Week 2 adds
-four functions to it; Week 13 imports what Week 5 wrote. Set it up once, keep it
+three functions to it; Week 13 imports what Week 5 wrote. Set it up once, keep it
 in git, and never copy a constant from one script into another.
 
 ---
 
 ## 1. Install
 
-These instructions use conda. If you already have Anaconda or Miniconda, that
-works; if not, [Miniforge](https://conda-forge.org/download/) is the smallest
-option and comes preconfigured for the conda-forge package channel. If you would
-rather not install conda at all, skip to *Without conda* below — a plain virtual
-environment works just as well.
+You need conda. If you do not have it, install
+[Miniforge](https://conda-forge.org/download/) — it is the smallest option and
+comes preconfigured for the conda-forge package channel. An existing Anaconda or
+Miniconda installation works too.
 
 From wherever you keep coursework:
 
@@ -102,15 +101,13 @@ equals signs; assignment problems appear below it.
 ```
 astrotools/          the toolbox you are building
   constants.py       every number the course uses. Import from here, always.
-  cloud/collapse.py  Set 1           <- you write four functions
+  cloud/collapse.py  Set 1           <- you write three functions
   nbody/twobody.py   orbits, initial conditions, conserved quantities (provided)
   nbody/integrators.py  Set 2        <- you write rk4_step
   data.py            loaders for the archival datasets
 tests/               validation targets for each coding exercise
-ps1/, ps2/           starting points for the Set 1 and Set 2 figures
+ps1/, ps2/           driver scripts for the Set 1 and Set 2 figures
 data/                archival data, with provenance in data/README.md
-widgets/             the in-class widgets. Open the .html file in a browser;
-                     nothing to install, and they work offline.
 check_setup.py       this file's companion
 ```
 
@@ -132,15 +129,10 @@ Every week follows the same three steps.
    say nothing about whether the physics is. Each set ends by comparing your
    result against an archival dataset, which is supplied in `data/` and loaded by
    the functions in `astrotools/data.py` — you do not need to locate or download
-   anything yourself. For Set 1 that dataset is the *Herschel* Gould Belt core
-   catalog, and the questions are whether the Jeans mass predicts the masses of
-   real cores and whether the free-fall time predicts how long they live.
-
-The week runs in that order for a reason. Tuesday you derive the result and
-commit to a prediction; Thursday the widget shows you whether the prediction
-held; then you write the function that produced the widget's numbers and turn it
-on real data. By the time you open `collapse.py` you have already seen what it
-should do.
+   anything yourself. The scientific question — *does the predicted spread of
+   disk radii match the observed one, and which input dominates it?* — is
+   answered in the figure and the write-up, and that is where most of the credit
+   lives.
 
 ## 5. When the toolbox gains a package
 
@@ -182,7 +174,8 @@ state where their data came from.
 | conda's `Solving environment` runs for more than a minute | You are using an older copy of `environment.yml`. Run `git pull` — the current file lists only Python and pip, which solves almost instantly. Ctrl-C will not interrupt a solve in progress, since it runs inside a C extension that ignores the signal; open a second terminal, run `pkill -f conda`, then `conda env remove -n astr5820` before retrying. |
 | `rebound` fails to install | It compiles from source and needs a C compiler: `xcode-select --install` on macOS, `gcc` on Linux. On Windows, use WSL2 or Codespaces (§1). Not needed before Week 9. |
 | Figures do not appear when running a script | Scripts save to `figures/` rather than opening a window. Open the file. In Jupyter, add `%matplotlib inline`. |
-| A test fails by roughly a factor of 1.5 | Almost always µ: mass density is `n(H2) * mu * m_H`, and `sqrt(2.33) = 1.53`. |
+| A test fails by roughly 10% | µ, and which one. The density conversion uses `MU_H2 = 2.8`, not `MU_CLOUD = 2.33`; using 2.33 there makes `rho` low by 17% and `M_J` high by 10%. `MU_CLOUD` belongs in the sound speed, not in the density. |
+| A test fails by roughly a factor of 1.7 | You dropped the mean molecular weight from the density conversion altogether: `rho = n(H2) * MU_H2 * m_H`, and `sqrt(2.8) = 1.67`. |
 | A test fails by orders of magnitude | Units. Everything in this course is SI, including inputs. Convert at the boundary, never inside a formula. |
 | Jupyter cannot see the environment | With the environment active, run `pip install -e ".[notebook]"` then `python -m ipykernel install --user --name astr5820`, and pick that kernel. |
 
