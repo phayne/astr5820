@@ -72,7 +72,10 @@ def jeans_mass(temperature, density, mu=c.MU_CLOUD):
     The prefactor is convention-dependent; use the form given in Lecture 2 so
     your answer and the test agree.
     """
-    raise NotImplementedError("PS1, question 1")
+    fac1 = np.power(5 * c.K_B * temperature / (c.G * mu * c.M_H), 1.5)
+    fac2 = np.sqrt(3 / (4 * np.pi * density))
+    MJ = fac1 * fac2
+    return MJ
 
 
 def free_fall_time(density):
