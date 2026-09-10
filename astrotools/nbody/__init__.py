@@ -1,1 +1,1 @@
-"""Orbits, integrators, and N-body dynamics (Weeks 4, 9-10)."""
+"""Two-body orbits and fixed-step integrators."""

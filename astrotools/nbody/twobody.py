@@ -1,15 +1,15 @@
 """
-The two-body problem: right-hand sides, initial conditions, and diagnostics.
+The two-body problem: right-hand side, initial conditions, and diagnostics.
 
-Complete -- nothing to implement here. This module exists so that Problem Set 1
-stage B is about the integration scheme and nothing else.
+You implement two functions, hill_radius and roche_density. Everything else here
+is complete, so that the integration work is about the scheme and nothing else.
 
 State vector convention, used by every integrator in this course:
 
     y = [x, y, vx, vy]
 
 for a test particle orbiting a fixed mass at the origin, in the orbital plane.
-Week 9 generalises this to N bodies in 3D; the convention does not change.
+Everything is SI.
 """
 
 import numpy as np
@@ -17,14 +17,16 @@ import numpy as np
 from astrotools import constants as c
 
 
-def kepler_acceleration(t, y, gm=c.GM_SUN):
-    """Acceleration of a test particle in a fixed point-mass potential.
+def kepler_derivs(t, y, gm=c.GM_SUN):
+    """Time derivative of the two-body state vector.
+
+    This is the ``func`` argument the steppers expect.
 
     Parameters
     ----------
     t : float
         Time [s]. Unused -- the potential is static -- but kept in the signature
-        so that acceleration and derivative functions are interchangeable.
+        so that any right-hand side can be passed to any stepper.
     y : ndarray, shape (4,)
         State vector [x, y, vx, vy] in SI.
     gm : float, optional
@@ -32,25 +34,11 @@ def kepler_acceleration(t, y, gm=c.GM_SUN):
 
     Returns
     -------
-    ndarray, shape (2,)
-        Acceleration [ax, ay] [m s^-2].
-    """
-    r_vec = y[:2]
-    r = np.sqrt(r_vec[0] ** 2 + r_vec[1] ** 2)
-    return -gm * r_vec / r ** 3
-
-
-def kepler_derivs(t, y, gm=c.GM_SUN):
-    """Time derivative of the two-body state vector.
-
-    This is the ``func`` argument that euler_step and rk4_step expect.
-
-    Returns
-    -------
     ndarray, shape (4,)
         [vx, vy, ax, ay].
     """
-    return np.concatenate((y[2:], kepler_acceleration(t, y, gm)))
+    r = np.sqrt(y[0] ** 2 + y[1] ** 2)
+    return np.array([y[2], y[3], -gm * y[0] / r ** 3, -gm * y[1] / r ** 3])
 
 
 def orbital_period(a, gm=c.GM_SUN):
@@ -62,7 +50,9 @@ def initial_conditions(a, e, gm=c.GM_SUN):
     """State vector at pericentre for an orbit of given a and e.
 
     Starting at pericentre puts the fastest, most demanding part of the orbit at
-    step zero, which is what you want when testing an integrator.
+    step zero, which is what you want when testing an integrator. The particle
+    returns to this exact state after one period, so the distance between the
+    final and initial positions is the global error of a one-period run.
 
     Parameters
     ----------
@@ -112,3 +102,63 @@ def relative_drift(quantity):
     """
     quantity = np.asarray(quantity)
     return (quantity - quantity[0]) / np.abs(quantity[0])
+
+
+def hill_radius(a, m_planet, m_star=c.M_SUN, e=0.0):
+    """Radius of the region in which a planet's gravity beats the star's tide.
+
+    Parameters
+    ----------
+    a : float or array_like
+        Semi-major axis of the planet's orbit about the star [m].
+    m_planet : float or array_like
+        Mass of the planet [kg].
+    m_star : float or array_like, optional
+        Mass of the star [kg].
+    e : float or array_like, optional
+        Eccentricity of the planet's orbit. The Hill radius is smallest at
+        pericentre, which is what limits what the planet holds onto over many
+        orbits; the default e = 0 gives the circular-orbit value.
+
+    Returns
+    -------
+    float or ndarray
+        Hill radius [m].
+
+    Notes
+    -----
+    Earth gives r_H = 1.50e9 m = 0.0100 AU.
+
+    Only the mass ratio matters, so both masses in kilograms and both in solar
+    masses give the same answer. One of each does not.
+    """
+    raise NotImplementedError("PS2, section 1")
+
+
+def roche_density(a, m_star=c.M_SUN):
+    """Critical mean density for tidal disruption of a rigid satellite.
+
+    A body of lower mean density than this, orbiting at distance a, is pulled
+    apart: its own surface lies outside its Hill radius.
+
+    Parameters
+    ----------
+    a : float or array_like
+        Distance from the primary [m].
+    m_star : float or array_like, optional
+        Mass of the primary [kg]. For rings this is the planet, not the Sun.
+
+    Returns
+    -------
+    float or ndarray
+        Critical mean density [kg m^-3].
+
+    Notes
+    -----
+    Saturn (M = 5.6834e26 kg) at the orbit of Mimas, a = 1.855e8 m, gives
+    rho_R = 64 kg m^-3.
+
+    There is no radius in this expression, and no property of the satellite
+    other than the density being compared against.
+    """
+    raise NotImplementedError("PS2, section 1")
